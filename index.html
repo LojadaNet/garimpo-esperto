@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garimpo Esperto - Buscador de Ofertas</title>
+    <style>
+      :root {
+        --primary: #7c3aed; /* roxo da logo */
+        --bg: #ffffff;
+        --text: #1e1e1e;
+        --muted: #6b7280;
+        --card-bg: #f9f9f9;
+        --border: #e5e7eb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Poppins", "Inter", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        padding: 0;
+      }
+
+      header {
+        background-color: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      header img {
+        height: 60px;
+        border-radius: 50%;
+      }
+
+      header h1 {
+        font-size: 22px;
+        margin: 0;
+        font-weight: 700;
+      }
+
+      p.lead {
+        font-size: 14px;
+        margin: 4px 0 0 0;
+        color: #f1f1f1;
+      }
+
+      .search {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        background: #f3f4f6;
+        padding: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        min-width: 240px;
+        font-size: 15px;
+        outline: none;
+      }
+
+      button {
+        background: var(--primary);
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      button:hover {
+        background: #6928c4;
+      }
+
+      #resetBtn {
+        background: #e5e7eb;
+        color: #1f2937;
+      }
+
+      main {
+        padding: 40px 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-items: center;
+        max-width: 1000px; /* limite da largura da grade */
+        width: 100%;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        transition: all 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .product-title {
+        font-size: 17px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+      }
+
+      .sku {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .price {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 18px;
+        margin-top: 10px;
+      }
+
+      .buy {
+        background: var(--primary);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        text-align: center;
+        display: block;
+        text-decoration: none;
+        margin-top: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+
+      .buy:hover {
+        background: #6928c4;
+      }
+
+      .product-img {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 600px) {
+        header {
+          flex-direction: column;
+          gap: 10px;
+        }
+        header img {
+          height: 50px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <img src="./media/channels4_profile.png" alt="Logo Garimpo Esperto" />
+        <div>
+          <h1>Garimpo Esperto</h1>
+          <p class="lead">
+            Busque produtos, ache ofertas e garimpe os melhores achados!
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section class="search">
+      <input
+        id="qname"
+        type="text"
+        placeholder="Pesquisar por nome do produto..."
+      />
+      <input
+        id="qsku"
+        type="number"
+        placeholder="Ou digite o número do produto (SKU)..."
+      />
+      <button id="searchBtn">Buscar</button>
+      <button id="resetBtn">Limpar</button>
+    </section>
+
+    <main>
+      <div id="results" class="grid"></div>
+    </main>
+
+    <footer>
+      © 2025 Garimpo Esperto — Seu portal de achadinhos inteligentes 💜
+    </footer>
+
+    <script>
+      const products = [
+        {
+          sku: 1001,
+          name: 'Multimídia Som de Carro Universal CarPlay Android e iOS Tela 7" + Câmera de Ré',
+          price: 209.99,
+          image: "media/produto 1001/produto1001.jpg",
+          affiliate: "https://s.shopee.com.br/2Vj6ds95gN",
+        },
+        {
+          sku: 1002,
+          name: "Compressor De Ar Elétrico Portátil Digital Ncher Pneu Carro Moto Bike Bicicleta Bola Piscina Infláve",
+          price: 71.89,
+          image: "media/produto 1002/produto1002.jpg",
+          affiliate: "https://s.shopee.com.br/3qEUFRK8gL",
+        },
+        {
+          sku: 1003,
+          name: "Inversor Tensão 12v 110v Veicular Com 300w Conversor 4 Porta USB - KPTC13 110V/220V",
+          price: 148.99,
+          image: "media/produto 1003/produto1003.jpg",
+          affiliate: "https://s.shopee.com.br/2LPgTEu2nQ",
+        },
+        {
+          sku: 1004,
+          name: "Aspirador e Soprador Portátil 5 em 1 - Alta Potência e Multifuncional para Limpeza Completa",
+          price: 39.88,
+          image: "media/produto 1004/produto1004.jpg",
+          affiliate: "https://s.shopee.com.br/5fg8S8JdLy",
+        },
+      ];
+
+      const resultsEl = document.getElementById("results");
+      const qname = document.getElementById("qname");
+      const qsku = document.getElementById("qsku");
+      const searchBtn = document.getElementById("searchBtn");
+      const resetBtn = document.getElementById("resetBtn");
+
+      function render(list) {
+        resultsEl.innerHTML = "";
+        if (!list.length) {
+          resultsEl.innerHTML =
+            '<p style="color:#6b7280;">Nenhum produto encontrado.</p>';
+          return;
+        }
+        list.forEach((p) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+          ${
+            p.image
+              ? `<img src="${p.image}" alt="${p.name}" class="product-img">`
+              : ""
+          }
+          <h3 class="product-title">${p.name}</h3>
+          <div class="sku">Código: ${p.sku}</div>
+          <div class="price">R$ ${p.price.toFixed(2)}</div>
+          <a class="buy" href="${p.affiliate}" target="_blank">Comprar Agora</a>
+        `;
+          resultsEl.appendChild(card);
+        });
+      }
+
+      function search() {
+        const name = qname.value.trim().toLowerCase();
+        const sku = qsku.value.trim();
+        let res = products;
+        if (name) res = res.filter((p) => p.name.toLowerCase().includes(name));
+        if (sku) res = res.filter((p) => String(p.sku) === String(sku));
+        render(res);
+      }
+
+      searchBtn.addEventListener("click", search);
+      resetBtn.addEventListener("click", () => {
+        qname.value = "";
+        qsku.value = "";
+        render(products);
+      });
+
+      render(products);
+    </script>
+  </body>
+</html>
